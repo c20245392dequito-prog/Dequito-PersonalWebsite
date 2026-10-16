@@ -1,141 +1,767 @@
-    <!DOCTYPE html>
-    <html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Jive Miguel Dequito Personal System</title>
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#020617">
+    <title>Jive Miguel V. Dequito | Digital Realm</title>
 
-        <link rel="stylesheet" href="style.css">
-    </head>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-    <body>
+    <style type="text/tailwindcss">
+        @custom-variant dark (&:where(.dark, .dark *));
 
-    
-        <header>
-            <h1>Jive Miguel Dequito</h1>
-            <p>Personal Brand Page</p>
-        </header>
+        @theme {
+            --color-primary: #991b1b;
+            --color-secondary: #fb923c;
+            --color-tertiary: #334155;
+        }
 
+        @layer base {
+            body {
+                @apply bg-slate-950 text-white;
+            }
 
-        <nav>
-            <a href="#home">Home</a>
-            <a href="#about">About Me</a>
-            <a href="#skills">Skills</a>
-            <a href="#contact">Contact</a>
-        </nav>
+            ::selection {
+                @apply bg-primary text-white;
+            }
 
+            html {
+                scroll-behavior: smooth;
+            }
+        }
 
-        <main>
+        @layer components {
+            .btn-primary {
+                @apply px-5 py-3 bg-primary text-white hover:bg-secondary transition-colors duration-300 rounded-lg font-semibold;
+            }
 
-        
-            <section id="home" class="section-box">
-                <h2>Welcome to My Personal System</h2>
+            .btn-secondary {
+                @apply px-5 py-3 bg-secondary text-slate-950 hover:bg-primary hover:text-white transition-colors duration-300 rounded-lg font-semibold;
+            }
 
-                <p>
-                    Hello! My name is Jive Miguel Dequito.
-                    This is my simple personal brand page created
-                    for my practical examination!
+            .btn-tertiary {
+                @apply px-5 py-3 bg-tertiary text-white hover:bg-primary transition-colors duration-300 rounded-lg font-semibold;
+            }
+
+            .panel {
+                @apply bg-slate-900 border border-slate-800 rounded-xl;
+            }
+
+            .nav-link {
+                @apply flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors;
+            }
+
+            .nav-link.active {
+                @apply bg-primary text-white;
+            }
+
+            .section-title {
+                @apply text-xl font-bold tracking-wide;
+            }
+
+            .status-dot {
+                @apply inline-block w-2 h-2 rounded-full bg-secondary;
+            }
+
+            .profile-label {
+                @apply text-xs uppercase tracking-widest text-slate-500;
+            }
+
+            .profile-value {
+                @apply mt-2 text-sm md:text-base font-medium text-white break-words;
+            }
+        }
+
+        @layer utilities {
+            .grid-background {
+                background-image:
+                    linear-gradient(#33415518 1px, transparent 1px),
+                    linear-gradient(90deg, #33415518 1px, transparent 1px);
+                background-size: 32px 32px;
+            }
+
+            .glow-text {
+                text-shadow: 0 0 20px #991b1b70;
+            }
+
+            .accent-line {
+                background: linear-gradient(90deg, #991b1b, #fb923c, transparent);
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+
+    <!-- HEADER -->
+    <header class="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/95 backdrop-blur">
+        <div class="flex items-center justify-between px-5 md:px-8 py-4">
+
+            <a href="#dashboard" class="flex items-center gap-3">
+                <div class="flex items-center justify-center w-11 h-11 rounded-xl bg-primary font-black text-xl">
+                    JD
+                </div>
+
+                <div>
+                    <h1 class="font-black tracking-widest">DIGITAL REALM</h1>
+                    <p class="text-xs text-slate-500 tracking-wider">JIVE DEQUITO // PERSONAL SYSTEM</p>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <div class="hidden sm:flex items-center gap-2 text-xs text-slate-400">
+                    <span class="status-dot"></span>
+                    SYSTEM ONLINE
+                </div>
+
+                <button id="themeButton" class="btn-tertiary !px-3 !py-2" aria-label="Toggle theme">
+                    ◐
+                </button>
+
+                <button id="menuButton" class="btn-tertiary !px-3 !py-2 lg:hidden" aria-label="Toggle navigation">
+                    ☰
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex min-h-screen">
+
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="hidden lg:block w-64 shrink-0 border-r border-slate-800 bg-slate-950 p-5">
+            <p class="text-xs font-bold tracking-[0.2em] text-slate-500 mb-4">MAIN INTERFACE</p>
+
+            <nav class="space-y-2">
+                <a href="#dashboard" class="nav-link active">▦ Dashboard</a>
+                <a href="#identity" class="nav-link">◉ Identity Profile</a>
+                <a href="#modules" class="nav-link">◈ System Modules</a>
+                <a href="#projects" class="nav-link">⬡ Project Vault</a>
+                <a href="#terminal" class="nav-link">⌘ Terminal</a>
+                <a href="#activity" class="nav-link">≋ Activity Log</a>
+            </nav>
+
+            <div class="panel p-4 mt-10">
+                <p class="profile-label">System Version</p>
+                <p class="text-2xl font-black mt-2">01.00</p>
+
+                <div class="w-full h-1.5 rounded-full bg-slate-800 mt-4 overflow-hidden">
+                    <div class="h-full w-[85%] bg-secondary"></div>
+                </div>
+
+                <p class="text-xs text-slate-500 mt-2">Core initialized</p>
+            </div>
+
+            <div class="mt-8 text-xs text-slate-600 leading-relaxed">
+                <p>DESIGNED TO EXPLORE.</p>
+                <p>BUILT TO CREATE.</p>
+                <p>POWERED BY CURIOSITY.</p>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="flex-1 min-w-0 grid-background">
+
+            <!-- DASHBOARD -->
+            <section id="dashboard" class="p-5 md:p-8 lg:p-10">
+
+                <div class="flex flex-col xl:flex-row xl:items-end justify-between gap-6 mb-8">
+                    <div>
+                        <p class="text-secondary text-xs font-bold tracking-[0.3em] mb-3">
+                            / CORE / DASHBOARD
+                        </p>
+
+                        <h2 class="text-3xl md:text-5xl font-black tracking-tight glow-text">
+                            SYSTEM ONLINE<span class="text-secondary">.</span>
+                        </h2>
+
+                        <p class="text-slate-400 mt-4 max-w-xl leading-relaxed">
+                            Welcome to my digital realm. A personal system built to
+                            organize ideas, showcase projects, and explore the digital world.
+                        </p>
+
+                        <p class="mt-4 text-sm text-slate-500">
+                            OPERATOR:
+                            <span class="text-white font-semibold">Jive Miguel V. Dequito</span>
+                        </p>
+                    </div>
+
+                    <button id="refreshButton" class="btn-primary">
+                        ↻ Refresh System
+                    </button>
+                </div>
+
+                <div class="h-px accent-line mb-8"></div>
+
+                <!-- STATUS CARDS -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+
+                    <div class="panel p-5">
+                        <p class="text-slate-400 text-sm">System Status</p>
+                        <h3 class="text-2xl font-bold mt-4">ONLINE</h3>
+                        <p class="text-xs text-slate-500 mt-2">Interface operational</p>
+                    </div>
+
+                    <div class="panel p-5">
+                        <p class="text-slate-400 text-sm">Identity</p>
+                        <h3 class="text-2xl font-bold mt-4">VERIFIED*</h3>
+                        <p class="text-xs text-slate-500 mt-2">Profile information loaded</p>
+                    </div>
+
+                    <div class="panel p-5">
+                        <p class="text-slate-400 text-sm">Project Slots</p>
+                        <h3 class="text-2xl font-bold mt-4">03</h3>
+                        <p class="text-xs text-slate-500 mt-2">Personal project records</p>
+                    </div>
+
+                    <div class="panel p-5">
+                        <p class="text-slate-400 text-sm">Security Mode</p>
+                        <h3 class="text-2xl font-bold mt-4">LOCAL</h3>
+                        <p class="text-xs text-slate-500 mt-2">Frontend demonstration</p>
+                    </div>
+
+                </div>
+
+                <!-- FEATURED PANEL -->
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+                    <div class="panel xl:col-span-2 p-6 md:p-8 relative overflow-hidden">
+                        <div class="absolute -right-10 -top-10 w-48 h-48 rounded-full border border-secondary/20"></div>
+                        <div class="absolute -right-4 -top-4 w-36 h-36 rounded-full border border-primary/70"></div>
+
+                        <div class="absolute right-8 top-8 text-6xl text-primary/50">⬡</div>
+
+                        <p class="text-secondary text-xs tracking-[0.25em] font-bold">
+                            OPERATOR ID // 001
+                        </p>
+
+                        <h3 class="text-3xl md:text-4xl font-black mt-5 relative z-10">
+                            JIVE MIGUEL<br>
+                            <span class="text-secondary">V. DEQUITO.</span>
+                        </h3>
+
+                        <p class="text-slate-400 max-w-md mt-4 leading-relaxed relative z-10">
+                            Welcome to my personal digital environment.
+                            This is where my identity, projects, and experiments come together.
+                        </p>
+
+                        <div class="flex flex-wrap gap-3 mt-7 relative z-10">
+                            <a href="#identity" class="btn-primary">View Identity ↗</a>
+                            <a href="#projects" class="btn-tertiary">Explore Projects</a>
+                        </div>
+
+                        <div class="mt-10 pt-5 border-t border-slate-800 flex flex-wrap gap-5 text-xs text-slate-500">
+                            <span>PROFILE: ACTIVE</span>
+                            <span>MODE: INTERACTIVE</span>
+                            <span>ACCESS: PUBLIC DEMO</span>
+                        </div>
+                    </div>
+
+                    <!-- QUICK ACCESS -->
+                    <div class="panel p-6">
+                        <p class="text-xs text-secondary tracking-[0.2em] font-bold">QUICK ACCESS</p>
+                        <h3 class="section-title mt-3 mb-5">Launch Center</h3>
+
+                        <div class="space-y-3">
+                            <button class="btn-primary w-full text-left" data-command="identity">
+                                ◉ &nbsp; My Identity
+                            </button>
+
+                            <button class="btn-secondary w-full text-left" data-command="projects">
+                                ⬡ &nbsp; Project Vault
+                            </button>
+
+                            <button class="btn-tertiary w-full text-left" data-command="terminal">
+                                ⌘ &nbsp; Open Terminal
+                            </button>
+
+                            <button class="btn-tertiary w-full text-left" data-command="activity">
+                                ≋ &nbsp; Activity Log
+                            </button>
+                        </div>
+
+                        <p class="text-xs text-slate-500 mt-5">
+                            Select a command to navigate to a system section.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- IDENTITY PROFILE -->
+            <section id="identity" class="px-5 md:px-8 lg:px-10 pb-12">
+
+                <div class="mb-6">
+                    <p class="text-secondary text-xs tracking-[0.25em] font-bold">
+                        / DATABASE / OPERATOR RECORD
+                    </p>
+
+                    <h2 class="text-2xl md:text-3xl font-black mt-2">
+                        Identity Profile<span class="text-secondary">.</span>
+                    </h2>
+
+                    <p class="text-slate-400 mt-2">
+                        Personal information and operator details.
+                    </p>
+                </div>
+
+                <div class="panel overflow-hidden">
+
+                    <div class="p-6 md:p-8 bg-slate-900">
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-5">
+
+                            <!-- PROFILE ICON -->
+                            <div class="w-24 h-24 shrink-0 rounded-2xl bg-primary flex items-center justify-center text-4xl font-black">
+                                JD
+                            </div>
+
+                            <div>
+                                <p class="text-xs text-secondary tracking-[0.25em] font-bold">
+                                    PRIMARY OPERATOR
+                                </p>
+
+                                <h3 class="text-2xl md:text-3xl font-black mt-2">
+                                    Jive Miguel V. Dequito
+                                </h3>
+
+                                <p class="text-slate-400 mt-2">
+                                    Digital Explorer · System Owner
+                                </p>
+                            </div>
+
+                            <div class="sm:ml-auto">
+                                <span class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 text-xs text-secondary">
+                                    <span class="status-dot"></span>
+                                    PROFILE LOADED
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="p-6 md:p-8 border-t border-slate-800">
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+
+                            <div>
+                                <p class="profile-label">Full Name</p>
+                                <p class="profile-value">Jive Miguel V. Dequito</p>
+                            </div>
+
+                            <div>
+                                <p class="profile-label">Age</p>
+                                <p class="profile-value">20 years old</p>
+                            </div>
+
+                            <div>
+                                <p class="profile-label">Address</p>
+                                <p class="profile-value">Negros Occ. Victorias City, Brgy 6A</p>
+                            </div>
+
+                            <div>
+                                <p class="profile-label">Gmail / Username</p>
+                                <p class="profile-value">@sukuna</p>
+                            </div>
+
+                            <div>
+                                <p class="profile-label">Contact Number</p>
+                                <p class="profile-value">09933272908</p>
+                            </div>
+
+                            <div>
+                                <p class="profile-label">Account Type</p>
+                                <p class="profile-value">Personal Operator</p>
+                            </div>
+
+                        </div>
+
+                        <div class="mt-8 pt-6 border-t border-slate-800 flex flex-wrap gap-3">
+                            <button id="copyProfile" class="btn-primary">
+                                Copy Profile Details
+                            </button>
+
+                            <button id="downloadProfile" class="btn-tertiary">
+                                Export Profile
+                            </button>
+                        </div>
+
+                        <p id="profileMessage" class="text-sm text-secondary mt-4" aria-live="polite"></p>
+                    </div>
+                </div>
+
+                <p class="text-xs text-slate-500 mt-4">
+                    Privacy note: this is a frontend profile. The contact details are visible to anyone who can access the page.
                 </p>
-
-                <button id="welcomeButton">Click Me</button>
-
-                <p id="welcomeMessage"></p>
             </section>
 
-            <section id="about" class="section-box">
+            <!-- SYSTEM MODULES -->
+            <section id="modules" class="px-5 md:px-8 lg:px-10 pb-12">
 
-                <h2>About Me</h2>
-
-                <div class="about-container">
-
-                    <div>
-                        <h3>Personal Information</h3>
-
-                        <p><strong>Name:</strong> Jive Miguel Dequito</p>
-                        <p><strong>Subject:</strong> BSIS</p>
-                        <p><strong>School:</strong> Colegio de Sta. Ana de Victorias</p>
-                        <p><strong>Status:</strong> Student</p>
-                        <p><strong>Address:</strong> Negros occ, Victorias City, Brgy 6A</p>
-                        <p><strong>Notebook Type:</strong>Rene Binderbonia</p>
-                    </div>
-
-                    <div>
-                        <h3>Biodata</h3>
-
-                        <p><strong>Age:</strong> 20</p>
-                        <p><strong>Sex:</strong> Isa lang peru solid man!</p>
-                        <p><strong>Weight:</strong> 70kg</p>
-                        <p><strong>Height:</strong> 5'6</p>
-                        <p><strong>Bloodtype:</strong> Waray</p>
-                        <p><strong>Manoy size:</strong> 11 inches</p>
-                         <p><strong>Motto:</strong> More talaba to come!</p>
-
-                    </div>
-
+                <div class="mb-6">
+                    <p class="text-secondary text-xs tracking-[0.25em] font-bold">/ SYSTEM / MODULES</p>
+                    <h2 class="text-2xl md:text-3xl font-black mt-2">System Modules</h2>
+                    <p class="text-slate-400 mt-2">Independent spaces for different functions.</p>
                 </div>
 
-            </section>
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
 
-    
-            <section id="skills" class="section-box">
+                    <article class="panel p-5">
+                        <span class="text-3xl text-secondary">◈</span>
+                        <h3 class="font-bold text-lg mt-4">Identity Core</h3>
+                        <p class="text-sm text-slate-400 mt-2">Personal details and operator information.</p>
+                        <button class="btn-tertiary mt-5 w-full" data-command="identity">Open Module</button>
+                    </article>
 
-                <h2>My Skills</h2>
+                    <article class="panel p-5">
+                        <span class="text-3xl text-secondary">⬡</span>
+                        <h3 class="font-bold text-lg mt-4">Project Vault</h3>
+                        <p class="text-sm text-slate-400 mt-2">A space for digital builds and experiments.</p>
+                        <button class="btn-tertiary mt-5 w-full" data-command="projects">Open Module</button>
+                    </article>
 
-                <div class="skills-container">
+                    <article class="panel p-5">
+                        <span class="text-3xl text-secondary">⌘</span>
+                        <h3 class="font-bold text-lg mt-4">Command Terminal</h3>
+                        <p class="text-sm text-slate-400 mt-2">Run commands in a simulated interface.</p>
+                        <button class="btn-tertiary mt-5 w-full" data-command="terminal">Open Module</button>
+                    </article>
 
-                    <div class="skill-box">
-                        <h3>HTML</h3>
-                        <p>Basic webpage structure</p>
-                    </div>
-
-                    <div class="skill-box">
-                        <h3>CSS</h3>
-                        <p>Basic webpage design</p>
-                    </div>
-
-                    <div class="skill-box">
-                        <h3>JavaScript</h3>
-                        <p>Basic webpage interaction</p>
-                    </div>
+                    <article class="panel p-5">
+                        <span class="text-3xl text-secondary">≋</span>
+                        <h3 class="font-bold text-lg mt-4">System Monitor</h3>
+                        <p class="text-sm text-slate-400 mt-2">Review interface activity and events.</p>
+                        <button class="btn-tertiary mt-5 w-full" data-command="activity">Open Module</button>
+                    </article>
 
                 </div>
-
             </section>
 
-            <section id="contact" class="section-box">
+            <!-- PROJECT VAULT -->
+            <section id="projects" class="px-5 md:px-8 lg:px-10 pb-12">
 
-                <h2>Contact Me</h2>
+                <div class="mb-6">
+                    <p class="text-secondary text-xs tracking-[0.25em] font-bold">/ STORAGE / PROJECTS</p>
+                    <h2 class="text-2xl md:text-3xl font-black mt-2">Project Vault</h2>
+                </div>
 
-                <form id="contactForm">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" required>
+                    <article class="panel p-6">
+                        <p class="text-xs text-secondary font-bold">PROJECT_001</p>
+                        <h3 class="text-xl font-bold mt-4">Web Interface</h3>
+                        <p class="text-sm text-slate-400 mt-3">A custom web experience built with HTML and Tailwind CSS.</p>
+                        <div class="mt-5 pt-4 border-t border-slate-800 text-xs text-secondary">FRONTEND DEVELOPMENT</div>
+                    </article>
 
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
+                    <article class="panel p-6">
+                        <p class="text-xs text-secondary font-bold">PROJECT_002</p>
+                        <h3 class="text-xl font-bold mt-4">System Design</h3>
+                        <p class="text-sm text-slate-400 mt-3">Experiments with dashboards, components, and interface layouts.</p>
+                        <div class="mt-5 pt-4 border-t border-slate-800 text-xs text-secondary">UI / UX EXPERIMENTS</div>
+                    </article>
 
-                    <label for="message">Message</label>
-                    <textarea id="message" name="message" required></textarea>
+                    <article class="panel p-6">
+                        <p class="text-xs text-secondary font-bold">PROJECT_003</p>
+                        <h3 class="text-xl font-bold mt-4">Next Experiment</h3>
+                        <p class="text-sm text-slate-400 mt-3">A placeholder for your next idea or creative project.</p>
+                        <div class="mt-5 pt-4 border-t border-slate-800 text-xs text-secondary">AWAITING DEPLOYMENT</div>
+                    </article>
 
-                    <button type="submit">Send Message</button>
-
-                </form>
-
-                <p id="formMessage"></p>
-
+                </div>
             </section>
+
+            <!-- TERMINAL -->
+            <section id="terminal" class="px-5 md:px-8 lg:px-10 pb-12">
+
+                <div class="mb-6">
+                    <p class="text-secondary text-xs tracking-[0.25em] font-bold">/ CORE / TERMINAL</p>
+                    <h2 class="text-2xl md:text-3xl font-black mt-2">Command Terminal</h2>
+                </div>
+
+                <div class="panel overflow-hidden">
+
+                    <div class="bg-slate-800 px-5 py-3 flex items-center justify-between">
+                        <span class="text-sm font-bold">REALM_TERMINAL.exe</span>
+                        <span class="text-xs text-slate-400">SIMULATION MODE</span>
+                    </div>
+
+                    <div id="terminalOutput" class="p-5 h-52 overflow-y-auto font-mono text-sm text-slate-300 space-y-2">
+                        <p class="text-secondary">Digital Realm Terminal [Version 1.0]</p>
+                        <p>Operator: Jive Miguel V. Dequito</p>
+                        <p>Interface initialized successfully.</p>
+                        <p>Type <span class="text-secondary">help</span> to view available commands.</p>
+                    </div>
+
+                    <form id="terminalForm" class="border-t border-slate-800 p-4 flex gap-3">
+                        <span class="text-secondary font-mono self-center">&gt;_</span>
+
+                        <input
+                            id="terminalInput"
+                            type="text"
+                            autocomplete="off"
+                            placeholder="Enter a command..."
+                            class="flex-1 min-w-0 bg-transparent outline-none font-mono text-sm text-white placeholder:text-slate-600"
+                        >
+
+                        <button type="submit" class="btn-primary !px-4 !py-2">Run</button>
+                    </form>
+                </div>
+
+                <p class="text-xs text-slate-500 mt-3">
+                    Simulated terminal only. It does not execute operating-system commands.
+                </p>
+            </section>
+
+            <!-- ACTIVITY LOG -->
+            <section id="activity" class="px-5 md:px-8 lg:px-10 pb-12">
+
+                <div class="flex items-center justify-between gap-4 mb-6">
+                    <div>
+                        <p class="text-secondary text-xs tracking-[0.25em] font-bold">/ CORE / EVENT LOG</p>
+                        <h2 class="text-2xl md:text-3xl font-black mt-2">Activity Log</h2>
+                    </div>
+
+                    <button id="clearLogButton" class="btn-tertiary !px-4 !py-2">
+                        Clear Log
+                    </button>
+                </div>
+
+                <div class="panel p-5">
+                    <div id="activityLog" class="space-y-4 font-mono text-xs md:text-sm">
+                        <div class="flex gap-4">
+                            <span class="text-slate-500">[BOOT]</span>
+                            <span class="text-secondary">Digital Realm initialized.</span>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <span class="text-slate-500">[INFO]</span>
+                            <span class="text-slate-300">Operator profile loaded.</span>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <span class="text-slate-500">[READY]</span>
+                            <span class="text-slate-300">Awaiting user commands.</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FOOTER -->
+            <footer class="border-t border-slate-800 px-5 md:px-8 lg:px-10 py-6 flex flex-col sm:flex-row justify-between gap-2 text-xs text-slate-500">
+                <p>© 2026 JIVE MIGUEL V. DEQUITO</p>
+                <p>DIGITAL REALM // END OF TRANSMISSION</p>
+            </footer>
 
         </main>
+    </div>
 
-    
-        <footer>
-            <p>© 2026 Jive Miguel Dequito Personal System</p>
-        </footer>
+    <!-- JAVASCRIPT -->
+    <script>
+        const activityLog = document.getElementById("activityLog");
+        const terminalOutput = document.getElementById("terminalOutput");
 
-        <script src="script.js"></script>
+        function addLog(message, type = "INFO") {
+            const row = document.createElement("div");
+            row.className = "flex gap-4";
 
-    </body>
+            const label = document.createElement("span");
+            label.className = "text-slate-500 shrink-0";
+            label.textContent = "[" + type + "]";
 
-    </html>
+            const content = document.createElement("span");
+            content.className = "text-slate-300 break-words";
+            content.textContent = message;
 
+            row.append(label, content);
+            activityLog.prepend(row);
+        }
+
+        function navigateTo(id) {
+            const section = document.getElementById(id);
+
+            if (!section) return;
+
+            section.scrollIntoView({ behavior: "smooth" });
+
+            document.querySelectorAll(".nav-link").forEach(link => {
+                link.classList.toggle(
+                    "active",
+                    link.getAttribute("href") === "#" + id
+                );
+            });
+
+            document.getElementById("sidebar").classList.add("hidden");
+            addLog("Navigated to " + id + ".", "NAV");
+        }
+
+        // Sidebar navigation
+        document.querySelectorAll(".nav-link").forEach(link => {
+            link.addEventListener("click", () => {
+                document.querySelectorAll(".nav-link").forEach(item => {
+                    item.classList.remove("active");
+                });
+
+                link.classList.add("active");
+                document.getElementById("sidebar").classList.add("hidden");
+            });
+        });
+
+        // Quick access and module buttons
+        document.querySelectorAll("[data-command]").forEach(button => {
+            button.addEventListener("click", () => {
+                navigateTo(button.dataset.command);
+            });
+        });
+
+        // Refresh dashboard
+        document.getElementById("refreshButton").addEventListener("click", event => {
+            const button = event.currentTarget;
+
+            button.textContent = "✓ System Refreshed";
+            addLog("Dashboard refreshed by operator.", "REFRESH");
+
+            setTimeout(() => {
+                button.textContent = "↻ Refresh System";
+            }, 1500);
+        });
+
+        // Mobile menu
+        document.getElementById("menuButton").addEventListener("click", () => {
+            document.getElementById("sidebar").classList.toggle("hidden");
+        });
+
+        // Theme toggle
+        document.getElementById("themeButton").addEventListener("click", () => {
+            const light = document.body.classList.toggle("light-mode");
+
+            if (light) {
+                document.body.style.backgroundColor = "#f8fafc";
+                document.body.style.color = "#0f172a";
+
+                document.querySelectorAll(".panel").forEach(panel => {
+                    panel.style.backgroundColor = "#ffffff";
+                    panel.style.borderColor = "#cbd5e1";
+                });
+
+                document.querySelectorAll(".profile-value").forEach(value => {
+                    value.style.color = "#0f172a";
+                });
+
+                document.querySelectorAll(".nav-link").forEach(link => {
+                    link.style.color = "#334155";
+                });
+            } else {
+                document.body.style.backgroundColor = "";
+                document.body.style.color = "";
+
+                document.querySelectorAll(".panel").forEach(panel => {
+                    panel.style.backgroundColor = "";
+                    panel.style.borderColor = "";
+                });
+
+                document.querySelectorAll(".profile-value").forEach(value => {
+                    value.style.color = "";
+                });
+
+                document.querySelectorAll(".nav-link").forEach(link => {
+                    link.style.color = "";
+                });
+            }
+
+            addLog("Display theme changed to " + (light ? "light" : "dark") + ".", "THEME");
+        });
+
+        // Copy profile
+        document.getElementById("copyProfile").addEventListener("click", async () => {
+            const details = [
+                "Name: Jive Miguel V. Dequito",
+                "Address: Negros Occ. Victorias City, Brgy 6A",
+                "Age: 20",
+                "Gmail / Username: @sukuna",
+                "Contact: 09933272908"
+            ].join("\n");
+
+            const message = document.getElementById("profileMessage");
+
+            try {
+                await navigator.clipboard.writeText(details);
+                message.textContent = "Profile details copied.";
+                addLog("Profile details copied to clipboard.", "PROFILE");
+            } catch {
+                message.textContent = "Clipboard unavailable. You can copy the details manually.";
+            }
+        });
+
+        // Export profile as a text file
+        document.getElementById("downloadProfile").addEventListener("click", () => {
+            const details = [
+                "DIGITAL REALM - OPERATOR PROFILE",
+                "Name: Jive Miguel V. Dequito",
+                "Address: Negros Occ. Victorias City, Brgy 6A",
+                "Age: 20",
+                "Gmail / Username: @sukuna",
+                "Contact: 09933272908"
+            ].join("\n");
+
+            const file = new Blob([details], { type: "text/plain" });
+            const url = URL.createObjectURL(file);
+            const link = document.createElement("a");
+
+            link.href = url;
+            link.download = "jive-dequito-profile.txt";
+            link.click();
+
+            URL.revokeObjectURL(url);
+            addLog("Profile exported as a text file.", "EXPORT");
+        });
+
+        // Simulated terminal commands
+        const commands = {
+            help: "Commands: help, status, identity, modules, projects, clear",
+            status: "System online. Digital Realm interface is operational.",
+            identity: "Operator: Jive Miguel V. Dequito | Age: 20 | Profile loaded.",
+            modules: "Identity Core, Project Vault, Command Terminal, System Monitor.",
+            projects: "Web Interface, System Design, Next Experiment."
+        };
+
+        document.getElementById("terminalForm").addEventListener("submit", event => {
+            event.preventDefault();
+
+            const input = document.getElementById("terminalInput");
+            const command = input.value.trim().toLowerCase();
+
+            if (!command) return;
+
+            const entered = document.createElement("p");
+            entered.className = "text-secondary";
+            entered.textContent = "> " + command;
+            terminalOutput.appendChild(entered);
+
+            if (command === "clear") {
+                terminalOutput.replaceChildren();
+                input.value = "";
+                addLog("Terminal output cleared.", "TERM");
+                return;
+            }
+
+            const response = document.createElement("p");
+            response.className = "text-slate-300";
+            response.textContent = commands[command] ||
+                "Unknown command. Type 'help' for available commands.";
+
+            terminalOutput.appendChild(response);
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+
+            addLog("Terminal command executed: " + command, "TERM");
+            input.value = "";
+        });
+
+        // Clear activity log
+        document.getElementById("clearLogButton").addEventListener("click", () => {
+            activityLog.replaceChildren();
+            addLog("Activity log cleared.", "SYSTEM");
+        });
+    </script>
+
+</body>
+</html>
