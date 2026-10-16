@@ -2,766 +2,617 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#020617">
-    <title>Jive Miguel V. Dequito | Digital Realm</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DinoLab — Prehistoric Research System</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.14.2/gsap.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
-    <style type="text/tailwindcss">
-        @custom-variant dark (&:where(.dark, .dark *));
+<style>
+:root{
+ --bg:#050b0a;--panel:rgba(13,27,22,.9);--line:#294438;
+ --text:#e9f8ed;--muted:#91a99b;--accent:#baff6a;--cyan:#63e9d0;
+ --shadow:rgba(0,0,0,.3)
+}
+body.light{
+ color-scheme:light;--bg:#edf4e9;--panel:rgba(255,255,255,.92);
+ --line:#c9d9c8;--text:#15281b;--muted:#637768;--accent:#558b20;
+ --cyan:#087d70;--shadow:rgba(25,55,30,.1)
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{
+ margin:0;background:var(--bg);color:var(--text);
+ font-family:'Space Grotesk',sans-serif;overflow-x:hidden;
+ transition:background .5s,color .5s
+}
+body:before{
+ content:"";position:fixed;inset:0;pointer-events:none;z-index:-2;
+ background-image:linear-gradient(var(--line) 1px,transparent 1px),
+ linear-gradient(90deg,var(--line) 1px,transparent 1px);
+ background-size:46px 46px;opacity:.13;
+ mask-image:linear-gradient(to bottom,black,transparent 90%)
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.mono{font-family:'Space Mono',monospace}
+.muted{color:var(--muted)}
+.accent{color:var(--accent)}
+.panel{
+ background:var(--panel);border:1px solid var(--line);border-radius:20px;
+ backdrop-filter:blur(18px);box-shadow:0 18px 50px var(--shadow)
+}
+.btn{
+ display:inline-flex;align-items:center;justify-content:center;gap:8px;
+ border:1px solid var(--line);border-radius:11px;padding:10px 14px;
+ background:var(--panel);color:var(--text);font-size:12px;font-weight:600;
+ transition:transform .2s,border-color .2s,background .2s
+}
+.btn:hover{transform:translateY(-2px);border-color:var(--accent)}
+.btn-primary{background:var(--accent);color:#10190b;border-color:var(--accent)}
+.btn-primary:hover{background:var(--cyan);color:#07120f}
+.field{
+ width:100%;border:1px solid var(--line);border-radius:11px;
+ background:var(--bg);color:var(--text);padding:12px;outline:none
+}
+.field:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 13%,transparent)}
+.tag{
+ display:inline-block;padding:5px 8px;border:1px solid var(--line);
+ border-radius:99px;font:10px 'Space Mono',monospace;color:var(--cyan)
+}
+.orb{
+ position:fixed;width:360px;height:360px;border-radius:50%;
+ filter:blur(100px);opacity:.14;pointer-events:none;z-index:-1;background:var(--accent)
+}
+.orb-one{top:90px;right:-180px}
+.orb-two{top:600px;left:-220px;background:var(--cyan)}
+.topbar{
+ position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line);
+ background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(20px)
+}
+.logo-icon{
+ width:44px;height:44px;display:grid;place-items:center;border-radius:14px;
+ background:var(--accent);color:#10190b;font-size:25px
+}
+.hero{
+ position:relative;overflow:hidden;min-height:350px;
+ background:radial-gradient(ellipse at 90% 20%,color-mix(in srgb,var(--accent) 13%,transparent),transparent 45%),var(--panel)
+}
+.hero h1{font-size:clamp(40px,6vw,74px);line-height:.99;letter-spacing:-.065em}
+.hero-art{
+ position:absolute;right:5%;top:10%;font-size:clamp(100px,18vw,220px);
+ opacity:.13;filter:drop-shadow(0 0 35px var(--accent));pointer-events:none
+}
+.stat-card{border:1px solid var(--line);border-radius:15px;padding:18px;background:var(--panel)}
+.stat-number{font-size:30px;font-weight:700;letter-spacing:-1px}
+.dino-card{overflow:hidden;transition:border-color .25s,transform .25s}
+.dino-card:hover{border-color:var(--accent);transform:translateY(-5px)}
+.dino-image{
+ height:190px;position:relative;overflow:hidden;display:grid;place-items:center;
+ background:radial-gradient(ellipse at center,color-mix(in srgb,var(--accent) 12%,transparent),transparent 70%),linear-gradient(135deg,#152b22,#07110d)
+}
+.dino-image img{width:100%;height:100%;object-fit:cover;transition:transform .55s}
+.dino-card:hover .dino-image img{transform:scale(1.04)}
+.dino-emoji{font-size:78px;filter:drop-shadow(0 10px 15px #0008)}
+.photo-button{position:absolute;right:10px;bottom:10px;background:#08120fe8;color:#eaffec;border-color:#52725e}
+.section-label{font:11px 'Space Mono',monospace;letter-spacing:.15em;color:var(--accent)}
+#modal{
+ display:none;position:fixed;inset:0;z-index:50;padding:18px;background:#000c;
+ backdrop-filter:blur(9px);align-items:center;justify-content:center
+}
+#modal.open{display:flex}
+.modal-box{
+ width:100%;max-width:760px;max-height:92vh;overflow:auto;padding:25px;
+ background:var(--panel);border:1px solid var(--line);border-radius:22px
+}
+#toast{
+ position:fixed;right:20px;bottom:20px;z-index:100;max-width:calc(100% - 40px);
+ padding:13px 17px;border-radius:12px;background:var(--accent);color:#10190b;
+ font-weight:700;font-size:13px;opacity:0;pointer-events:none
+}
+#photoInput,#importInput{display:none}
+.preview{max-height:230px;max-width:100%;border-radius:12px;object-fit:contain}
 
-        @theme {
-            --color-primary: #991b1b;
-            --color-secondary: #fb923c;
-            --color-tertiary: #334155;
-        }
-
-        @layer base {
-            body {
-                @apply bg-slate-950 text-white;
-            }
-
-            ::selection {
-                @apply bg-primary text-white;
-            }
-
-            html {
-                scroll-behavior: smooth;
-            }
-        }
-
-        @layer components {
-            .btn-primary {
-                @apply px-5 py-3 bg-primary text-white hover:bg-secondary transition-colors duration-300 rounded-lg font-semibold;
-            }
-
-            .btn-secondary {
-                @apply px-5 py-3 bg-secondary text-slate-950 hover:bg-primary hover:text-white transition-colors duration-300 rounded-lg font-semibold;
-            }
-
-            .btn-tertiary {
-                @apply px-5 py-3 bg-tertiary text-white hover:bg-primary transition-colors duration-300 rounded-lg font-semibold;
-            }
-
-            .panel {
-                @apply bg-slate-900 border border-slate-800 rounded-xl;
-            }
-
-            .nav-link {
-                @apply flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors;
-            }
-
-            .nav-link.active {
-                @apply bg-primary text-white;
-            }
-
-            .section-title {
-                @apply text-xl font-bold tracking-wide;
-            }
-
-            .status-dot {
-                @apply inline-block w-2 h-2 rounded-full bg-secondary;
-            }
-
-            .profile-label {
-                @apply text-xs uppercase tracking-widest text-slate-500;
-            }
-
-            .profile-value {
-                @apply mt-2 text-sm md:text-base font-medium text-white break-words;
-            }
-        }
-
-        @layer utilities {
-            .grid-background {
-                background-image:
-                    linear-gradient(#33415518 1px, transparent 1px),
-                    linear-gradient(90deg, #33415518 1px, transparent 1px);
-                background-size: 32px 32px;
-            }
-
-            .glow-text {
-                text-shadow: 0 0 20px #991b1b70;
-            }
-
-            .accent-line {
-                background: linear-gradient(90deg, #991b1b, #fb923c, transparent);
-            }
-        }
-    </style>
+/* Full image in the details window */
+#modalContent .dino-image{
+ height:auto;min-height:200px;max-height:65vh;padding:12px;
+ display:flex;align-items:center;justify-content:center;background:var(--bg)
+}
+#modalContent .dino-image img{
+ display:block;width:100%;height:auto;max-height:60vh;
+ object-fit:contain;object-position:center
+}
+#modalContent .dino-emoji{font-size:100px;padding:30px}
+@media(max-width:640px){
+ .hero-art{right:-10px;top:28%;font-size:130px}
+ .hero h1{font-size:43px}
+ .dino-image{height:165px}
+ .modal-box{padding:17px}
+}
+</style>
 </head>
 
-<body class="min-h-screen">
-
-    <!-- HEADER -->
-    <header class="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/95 backdrop-blur">
-        <div class="flex items-center justify-between px-5 md:px-8 py-4">
-
-            <a href="#dashboard" class="flex items-center gap-3">
-                <div class="flex items-center justify-center w-11 h-11 rounded-xl bg-primary font-black text-xl">
-                    JD
-                </div>
-
-                <div>
-                    <h1 class="font-black tracking-widest">DIGITAL REALM</h1>
-                    <p class="text-xs text-slate-500 tracking-wider">JIVE DEQUITO // PERSONAL SYSTEM</p>
-                </div>
-            </a>
-
-            <div class="flex items-center gap-3">
-                <div class="hidden sm:flex items-center gap-2 text-xs text-slate-400">
-                    <span class="status-dot"></span>
-                    SYSTEM ONLINE
-                </div>
-
-                <button id="themeButton" class="btn-tertiary !px-3 !py-2" aria-label="Toggle theme">
-                    ◐
-                </button>
-
-                <button id="menuButton" class="btn-tertiary !px-3 !py-2 lg:hidden" aria-label="Toggle navigation">
-                    ☰
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <div class="flex min-h-screen">
-
-        <!-- SIDEBAR -->
-        <aside id="sidebar" class="hidden lg:block w-64 shrink-0 border-r border-slate-800 bg-slate-950 p-5">
-            <p class="text-xs font-bold tracking-[0.2em] text-slate-500 mb-4">MAIN INTERFACE</p>
-
-            <nav class="space-y-2">
-                <a href="#dashboard" class="nav-link active">▦ Dashboard</a>
-                <a href="#identity" class="nav-link">◉ Identity Profile</a>
-                <a href="#modules" class="nav-link">◈ System Modules</a>
-                <a href="#projects" class="nav-link">⬡ Project Vault</a>
-                <a href="#terminal" class="nav-link">⌘ Terminal</a>
-                <a href="#activity" class="nav-link">≋ Activity Log</a>
-            </nav>
-
-            <div class="panel p-4 mt-10">
-                <p class="profile-label">System Version</p>
-                <p class="text-2xl font-black mt-2">01.00</p>
-
-                <div class="w-full h-1.5 rounded-full bg-slate-800 mt-4 overflow-hidden">
-                    <div class="h-full w-[85%] bg-secondary"></div>
-                </div>
-
-                <p class="text-xs text-slate-500 mt-2">Core initialized</p>
-            </div>
-
-            <div class="mt-8 text-xs text-slate-600 leading-relaxed">
-                <p>DESIGNED TO EXPLORE.</p>
-                <p>BUILT TO CREATE.</p>
-                <p>POWERED BY CURIOSITY.</p>
-            </div>
-        </aside>
-
-        <!-- MAIN -->
-        <main class="flex-1 min-w-0 grid-background">
-
-            <!-- DASHBOARD -->
-            <section id="dashboard" class="p-5 md:p-8 lg:p-10">
-
-                <div class="flex flex-col xl:flex-row xl:items-end justify-between gap-6 mb-8">
-                    <div>
-                        <p class="text-secondary text-xs font-bold tracking-[0.3em] mb-3">
-                            / CORE / DASHBOARD
-                        </p>
-
-                        <h2 class="text-3xl md:text-5xl font-black tracking-tight glow-text">
-                            SYSTEM ONLINE<span class="text-secondary">.</span>
-                        </h2>
-
-                        <p class="text-slate-400 mt-4 max-w-xl leading-relaxed">
-                            Welcome to my digital realm. A personal system built to
-                            organize ideas, showcase projects, and explore the digital world.
-                        </p>
-
-                        <p class="mt-4 text-sm text-slate-500">
-                            OPERATOR:
-                            <span class="text-white font-semibold">Jive Miguel V. Dequito</span>
-                        </p>
-                    </div>
-
-                    <button id="refreshButton" class="btn-primary">
-                        ↻ Refresh System
-                    </button>
-                </div>
-
-                <div class="h-px accent-line mb-8"></div>
-
-                <!-- STATUS CARDS -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
-
-                    <div class="panel p-5">
-                        <p class="text-slate-400 text-sm">System Status</p>
-                        <h3 class="text-2xl font-bold mt-4">ONLINE</h3>
-                        <p class="text-xs text-slate-500 mt-2">Interface operational</p>
-                    </div>
-
-                    <div class="panel p-5">
-                        <p class="text-slate-400 text-sm">Identity</p>
-                        <h3 class="text-2xl font-bold mt-4">VERIFIED*</h3>
-                        <p class="text-xs text-slate-500 mt-2">Profile information loaded</p>
-                    </div>
-
-                    <div class="panel p-5">
-                        <p class="text-slate-400 text-sm">Project Slots</p>
-                        <h3 class="text-2xl font-bold mt-4">03</h3>
-                        <p class="text-xs text-slate-500 mt-2">Personal project records</p>
-                    </div>
-
-                    <div class="panel p-5">
-                        <p class="text-slate-400 text-sm">Security Mode</p>
-                        <h3 class="text-2xl font-bold mt-4">LOCAL</h3>
-                        <p class="text-xs text-slate-500 mt-2">Frontend demonstration</p>
-                    </div>
-
-                </div>
-
-                <!-- FEATURED PANEL -->
-                <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-
-                    <div class="panel xl:col-span-2 p-6 md:p-8 relative overflow-hidden">
-                        <div class="absolute -right-10 -top-10 w-48 h-48 rounded-full border border-secondary/20"></div>
-                        <div class="absolute -right-4 -top-4 w-36 h-36 rounded-full border border-primary/70"></div>
-
-                        <div class="absolute right-8 top-8 text-6xl text-primary/50">⬡</div>
-
-                        <p class="text-secondary text-xs tracking-[0.25em] font-bold">
-                            OPERATOR ID // 001
-                        </p>
-
-                        <h3 class="text-3xl md:text-4xl font-black mt-5 relative z-10">
-                            JIVE MIGUEL<br>
-                            <span class="text-secondary">V. DEQUITO.</span>
-                        </h3>
-
-                        <p class="text-slate-400 max-w-md mt-4 leading-relaxed relative z-10">
-                            Welcome to my personal digital environment.
-                            This is where my identity, projects, and experiments come together.
-                        </p>
-
-                        <div class="flex flex-wrap gap-3 mt-7 relative z-10">
-                            <a href="#identity" class="btn-primary">View Identity ↗</a>
-                            <a href="#projects" class="btn-tertiary">Explore Projects</a>
-                        </div>
-
-                        <div class="mt-10 pt-5 border-t border-slate-800 flex flex-wrap gap-5 text-xs text-slate-500">
-                            <span>PROFILE: ACTIVE</span>
-                            <span>MODE: INTERACTIVE</span>
-                            <span>ACCESS: PUBLIC DEMO</span>
-                        </div>
-                    </div>
-
-                    <!-- QUICK ACCESS -->
-                    <div class="panel p-6">
-                        <p class="text-xs text-secondary tracking-[0.2em] font-bold">QUICK ACCESS</p>
-                        <h3 class="section-title mt-3 mb-5">Launch Center</h3>
-
-                        <div class="space-y-3">
-                            <button class="btn-primary w-full text-left" data-command="identity">
-                                ◉ &nbsp; My Identity
-                            </button>
-
-                            <button class="btn-secondary w-full text-left" data-command="projects">
-                                ⬡ &nbsp; Project Vault
-                            </button>
-
-                            <button class="btn-tertiary w-full text-left" data-command="terminal">
-                                ⌘ &nbsp; Open Terminal
-                            </button>
-
-                            <button class="btn-tertiary w-full text-left" data-command="activity">
-                                ≋ &nbsp; Activity Log
-                            </button>
-                        </div>
-
-                        <p class="text-xs text-slate-500 mt-5">
-                            Select a command to navigate to a system section.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- IDENTITY PROFILE -->
-            <section id="identity" class="px-5 md:px-8 lg:px-10 pb-12">
-
-                <div class="mb-6">
-                    <p class="text-secondary text-xs tracking-[0.25em] font-bold">
-                        / DATABASE / OPERATOR RECORD
-                    </p>
-
-                    <h2 class="text-2xl md:text-3xl font-black mt-2">
-                        Identity Profile<span class="text-secondary">.</span>
-                    </h2>
-
-                    <p class="text-slate-400 mt-2">
-                        Personal information and operator details.
-                    </p>
-                </div>
-
-                <div class="panel overflow-hidden">
-
-                    <div class="p-6 md:p-8 bg-slate-900">
-                        <div class="flex flex-col sm:flex-row sm:items-center gap-5">
-
-                            <!-- PROFILE ICON -->
-                            <div class="w-24 h-24 shrink-0 rounded-2xl bg-primary flex items-center justify-center text-4xl font-black">
-                                JD
-                            </div>
-
-                            <div>
-                                <p class="text-xs text-secondary tracking-[0.25em] font-bold">
-                                    PRIMARY OPERATOR
-                                </p>
-
-                                <h3 class="text-2xl md:text-3xl font-black mt-2">
-                                    Jive Miguel V. Dequito
-                                </h3>
-
-                                <p class="text-slate-400 mt-2">
-                                    Digital Explorer · System Owner
-                                </p>
-                            </div>
-
-                            <div class="sm:ml-auto">
-                                <span class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 text-xs text-secondary">
-                                    <span class="status-dot"></span>
-                                    PROFILE LOADED
-                                </span>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div class="p-6 md:p-8 border-t border-slate-800">
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
-
-                            <div>
-                                <p class="profile-label">Full Name</p>
-                                <p class="profile-value">Jive Miguel V. Dequito</p>
-                            </div>
-
-                            <div>
-                                <p class="profile-label">Age</p>
-                                <p class="profile-value">20 years old</p>
-                            </div>
-
-                            <div>
-                                <p class="profile-label">Address</p>
-                                <p class="profile-value">Negros Occ. Victorias City, Brgy 6A</p>
-                            </div>
-
-                            <div>
-                                <p class="profile-label">Gmail / Username</p>
-                                <p class="profile-value">@sukuna</p>
-                            </div>
-
-                            <div>
-                                <p class="profile-label">Contact Number</p>
-                                <p class="profile-value">09933272908</p>
-                            </div>
-
-                            <div>
-                                <p class="profile-label">Account Type</p>
-                                <p class="profile-value">Personal Operator</p>
-                            </div>
-
-                        </div>
-
-                        <div class="mt-8 pt-6 border-t border-slate-800 flex flex-wrap gap-3">
-                            <button id="copyProfile" class="btn-primary">
-                                Copy Profile Details
-                            </button>
-
-                            <button id="downloadProfile" class="btn-tertiary">
-                                Export Profile
-                            </button>
-                        </div>
-
-                        <p id="profileMessage" class="text-sm text-secondary mt-4" aria-live="polite"></p>
-                    </div>
-                </div>
-
-                <p class="text-xs text-slate-500 mt-4">
-                    Privacy note: this is a frontend profile. The contact details are visible to anyone who can access the page.
-                </p>
-            </section>
-
-            <!-- SYSTEM MODULES -->
-            <section id="modules" class="px-5 md:px-8 lg:px-10 pb-12">
-
-                <div class="mb-6">
-                    <p class="text-secondary text-xs tracking-[0.25em] font-bold">/ SYSTEM / MODULES</p>
-                    <h2 class="text-2xl md:text-3xl font-black mt-2">System Modules</h2>
-                    <p class="text-slate-400 mt-2">Independent spaces for different functions.</p>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-
-                    <article class="panel p-5">
-                        <span class="text-3xl text-secondary">◈</span>
-                        <h3 class="font-bold text-lg mt-4">Identity Core</h3>
-                        <p class="text-sm text-slate-400 mt-2">Personal details and operator information.</p>
-                        <button class="btn-tertiary mt-5 w-full" data-command="identity">Open Module</button>
-                    </article>
-
-                    <article class="panel p-5">
-                        <span class="text-3xl text-secondary">⬡</span>
-                        <h3 class="font-bold text-lg mt-4">Project Vault</h3>
-                        <p class="text-sm text-slate-400 mt-2">A space for digital builds and experiments.</p>
-                        <button class="btn-tertiary mt-5 w-full" data-command="projects">Open Module</button>
-                    </article>
-
-                    <article class="panel p-5">
-                        <span class="text-3xl text-secondary">⌘</span>
-                        <h3 class="font-bold text-lg mt-4">Command Terminal</h3>
-                        <p class="text-sm text-slate-400 mt-2">Run commands in a simulated interface.</p>
-                        <button class="btn-tertiary mt-5 w-full" data-command="terminal">Open Module</button>
-                    </article>
-
-                    <article class="panel p-5">
-                        <span class="text-3xl text-secondary">≋</span>
-                        <h3 class="font-bold text-lg mt-4">System Monitor</h3>
-                        <p class="text-sm text-slate-400 mt-2">Review interface activity and events.</p>
-                        <button class="btn-tertiary mt-5 w-full" data-command="activity">Open Module</button>
-                    </article>
-
-                </div>
-            </section>
-
-            <!-- PROJECT VAULT -->
-            <section id="projects" class="px-5 md:px-8 lg:px-10 pb-12">
-
-                <div class="mb-6">
-                    <p class="text-secondary text-xs tracking-[0.25em] font-bold">/ STORAGE / PROJECTS</p>
-                    <h2 class="text-2xl md:text-3xl font-black mt-2">Project Vault</h2>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-                    <article class="panel p-6">
-                        <p class="text-xs text-secondary font-bold">PROJECT_001</p>
-                        <h3 class="text-xl font-bold mt-4">Web Interface</h3>
-                        <p class="text-sm text-slate-400 mt-3">A custom web experience built with HTML and Tailwind CSS.</p>
-                        <div class="mt-5 pt-4 border-t border-slate-800 text-xs text-secondary">FRONTEND DEVELOPMENT</div>
-                    </article>
-
-                    <article class="panel p-6">
-                        <p class="text-xs text-secondary font-bold">PROJECT_002</p>
-                        <h3 class="text-xl font-bold mt-4">System Design</h3>
-                        <p class="text-sm text-slate-400 mt-3">Experiments with dashboards, components, and interface layouts.</p>
-                        <div class="mt-5 pt-4 border-t border-slate-800 text-xs text-secondary">UI / UX EXPERIMENTS</div>
-                    </article>
-
-                    <article class="panel p-6">
-                        <p class="text-xs text-secondary font-bold">PROJECT_003</p>
-                        <h3 class="text-xl font-bold mt-4">Next Experiment</h3>
-                        <p class="text-sm text-slate-400 mt-3">A placeholder for your next idea or creative project.</p>
-                        <div class="mt-5 pt-4 border-t border-slate-800 text-xs text-secondary">AWAITING DEPLOYMENT</div>
-                    </article>
-
-                </div>
-            </section>
-
-            <!-- TERMINAL -->
-            <section id="terminal" class="px-5 md:px-8 lg:px-10 pb-12">
-
-                <div class="mb-6">
-                    <p class="text-secondary text-xs tracking-[0.25em] font-bold">/ CORE / TERMINAL</p>
-                    <h2 class="text-2xl md:text-3xl font-black mt-2">Command Terminal</h2>
-                </div>
-
-                <div class="panel overflow-hidden">
-
-                    <div class="bg-slate-800 px-5 py-3 flex items-center justify-between">
-                        <span class="text-sm font-bold">REALM_TERMINAL.exe</span>
-                        <span class="text-xs text-slate-400">SIMULATION MODE</span>
-                    </div>
-
-                    <div id="terminalOutput" class="p-5 h-52 overflow-y-auto font-mono text-sm text-slate-300 space-y-2">
-                        <p class="text-secondary">Digital Realm Terminal [Version 1.0]</p>
-                        <p>Operator: Jive Miguel V. Dequito</p>
-                        <p>Interface initialized successfully.</p>
-                        <p>Type <span class="text-secondary">help</span> to view available commands.</p>
-                    </div>
-
-                    <form id="terminalForm" class="border-t border-slate-800 p-4 flex gap-3">
-                        <span class="text-secondary font-mono self-center">&gt;_</span>
-
-                        <input
-                            id="terminalInput"
-                            type="text"
-                            autocomplete="off"
-                            placeholder="Enter a command..."
-                            class="flex-1 min-w-0 bg-transparent outline-none font-mono text-sm text-white placeholder:text-slate-600"
-                        >
-
-                        <button type="submit" class="btn-primary !px-4 !py-2">Run</button>
-                    </form>
-                </div>
-
-                <p class="text-xs text-slate-500 mt-3">
-                    Simulated terminal only. It does not execute operating-system commands.
-                </p>
-            </section>
-
-            <!-- ACTIVITY LOG -->
-            <section id="activity" class="px-5 md:px-8 lg:px-10 pb-12">
-
-                <div class="flex items-center justify-between gap-4 mb-6">
-                    <div>
-                        <p class="text-secondary text-xs tracking-[0.25em] font-bold">/ CORE / EVENT LOG</p>
-                        <h2 class="text-2xl md:text-3xl font-black mt-2">Activity Log</h2>
-                    </div>
-
-                    <button id="clearLogButton" class="btn-tertiary !px-4 !py-2">
-                        Clear Log
-                    </button>
-                </div>
-
-                <div class="panel p-5">
-                    <div id="activityLog" class="space-y-4 font-mono text-xs md:text-sm">
-                        <div class="flex gap-4">
-                            <span class="text-slate-500">[BOOT]</span>
-                            <span class="text-secondary">Digital Realm initialized.</span>
-                        </div>
-
-                        <div class="flex gap-4">
-                            <span class="text-slate-500">[INFO]</span>
-                            <span class="text-slate-300">Operator profile loaded.</span>
-                        </div>
-
-                        <div class="flex gap-4">
-                            <span class="text-slate-500">[READY]</span>
-                            <span class="text-slate-300">Awaiting user commands.</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- FOOTER -->
-            <footer class="border-t border-slate-800 px-5 md:px-8 lg:px-10 py-6 flex flex-col sm:flex-row justify-between gap-2 text-xs text-slate-500">
-                <p>© 2026 JIVE MIGUEL V. DEQUITO</p>
-                <p>DIGITAL REALM // END OF TRANSMISSION</p>
-            </footer>
-
-        </main>
+<body>
+<div class="orb orb-one" id="orbOne"></div>
+<div class="orb orb-two" id="orbTwo"></div>
+
+<header class="topbar" id="topbar">
+ <div class="max-w-7xl mx-auto px-5 py-3 flex flex-wrap items-center justify-between gap-3">
+  <a href="#" class="flex items-center gap-3">
+   <div class="logo-icon">🦖</div>
+   <div>
+    <div class="text-xl font-bold tracking-tight">DINO<span class="accent">LAB</span></div>
+    <div class="mono muted text-[9px] tracking-[.2em]">PREHISTORIC INTELLIGENCE</div>
+   </div>
+  </a>
+  <nav class="flex flex-wrap items-center gap-2">
+   <a href="#database" class="btn">Database</a>
+   <a href="#researcher" class="btn">Researcher</a>
+   <button class="btn" id="themeBtn" onclick="toggleTheme()">Theme</button>
+   <button class="btn btn-primary" onclick="replayAnimation()">Replay Animation</button>
+  </nav>
+ </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-5 py-7">
+ <section class="hero panel p-6 md:p-10 mb-5" id="hero">
+  <div style="height:2px;position:absolute;top:0;left:0;right:0;background:var(--accent);box-shadow:0 0 15px var(--accent);opacity:.65"></div>
+  <div class="hero-art" id="heroArt">🦕</div>
+  <div class="relative z-10 max-w-3xl">
+   <div class="section-label mb-6">FIELD RESEARCH SYSTEM / 001</div>
+   <h1 id="heroTitle">The Lost World.<br><span class="accent">Rediscovered.</span></h1>
+   <p class="muted max-w-xl leading-7 mt-5" id="heroText">
+    Investigate ancient species, record biological evidence, and build your own prehistoric archive.
+    Every specimen tells a story.
+   </p>
+   <div class="flex flex-wrap gap-3 mt-7" id="heroButtons">
+    <a href="#database" class="btn btn-primary">Explore Specimens ↘</a>
+    <button class="btn" onclick="replayAnimation()">⟳ Replay Animation</button>
+    <button class="btn" onclick="exportData()">↓ Export Research</button>
+   </div>
+   <div class="flex flex-wrap gap-3 mt-7 mono text-[10px] muted">
+    <span>● ARCHIVE ONLINE</span><span>● SPECIES RESEARCH</span><span>● PHOTO DOCUMENTATION</span>
+   </div>
+  </div>
+ </section>
+
+ <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10" id="stats">
+  <div class="stat-card"><div class="section-label">TOTAL SPECIES</div><div id="totalCount" class="stat-number mt-2">15</div><div class="muted text-xs mt-1">All records</div></div>
+  <div class="stat-card"><div class="section-label">CUSTOM RECORDS</div><div id="customCount" class="stat-number mt-2">0</div><div class="muted text-xs mt-1">Added by you</div></div>
+  <div class="stat-card"><div class="section-label">PHOTOS</div><div id="photoCount" class="stat-number mt-2">0</div><div class="muted text-xs mt-1">Documented species</div></div>
+  <div class="stat-card"><div class="section-label">PERIODS</div><div class="stat-number mt-2">03</div><div class="muted text-xs mt-1">Triassic to Cretaceous</div></div>
+ </section>
+
+ <section id="database" class="mb-12">
+  <div class="flex flex-wrap justify-between items-end gap-4 mb-5">
+   <div>
+    <div class="section-label">01 / SPECIMEN ARCHIVE</div>
+    <h2 class="text-3xl md:text-4xl font-bold mt-2">Dinosaur Database<span class="accent">.</span></h2>
+    <p class="muted mt-2 text-sm">Explore, photograph, and manage your species collection.</p>
+   </div>
+   <button class="btn btn-primary" onclick="openForm()">＋ Add Dinosaur</button>
+  </div>
+
+  <div class="panel p-4 grid md:grid-cols-[1fr_175px_175px] gap-3 mb-5">
+   <input id="search" class="field" placeholder="⌕ Search species, scientific name, habitat..." oninput="renderDatabase()">
+   <select id="dietFilter" class="field" onchange="renderDatabase()">
+    <option value="">All Diets</option><option>Carnivore</option><option>Herbivore</option><option>Omnivore</option>
+   </select>
+   <select id="periodFilter" class="field" onchange="renderDatabase()">
+    <option value="">All Periods</option><option>Triassic</option><option>Jurassic</option><option>Cretaceous</option><option>Other</option>
+   </select>
+  </div>
+  <div id="dinoGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+  <div id="emptyState" class="panel hidden p-12 text-center">
+   <div class="text-5xl">🦴</div><h3 class="text-xl font-bold mt-4">No specimens found</h3>
+   <p class="muted mt-2">Try another search or add a new dinosaur record.</p>
+  </div>
+ </section>
+
+ <section id="researcher" class="panel p-6 md:p-8 mb-6">
+  <div class="flex flex-wrap justify-between items-center gap-3">
+   <div><div class="section-label">02 / RESEARCHER PROFILE</div><h2 class="text-2xl font-bold mt-2">Lead Researcher</h2></div>
+   <span class="tag">PERSONAL PROFILE</span>
+  </div>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-7">
+   <div><div class="muted mono text-[10px] mb-2">FULL NAME</div><div class="font-semibold">Jive Miguel V. Dequito</div></div>
+   <div><div class="muted mono text-[10px] mb-2">AGE</div><div class="font-semibold">20 years old</div></div>
+   <div><div class="muted mono text-[10px] mb-2">LOCATION</div><div class="font-semibold">Brgy. 6A, Victorias City, Negros Occidental</div></div>
+   <div><div class="muted mono text-[10px] mb-2">CONTACT / USERNAME</div><div class="font-semibold">@sukuna</div><div class="muted text-sm mt-1">09933272908</div></div>
+  </div>
+ </section>
+
+ <section class="panel p-6 mb-7">
+  <div class="section-label">03 / DATA MANAGEMENT</div>
+  <h2 class="text-xl font-bold mt-2">Research Tools</h2>
+  <p class="muted text-sm mt-1 mb-5">Back up your custom records and uploaded photos in a JSON file.</p>
+  <div class="flex flex-wrap gap-2">
+   <button class="btn btn-primary" onclick="exportData()">↓ Export JSON</button>
+   <button class="btn" onclick="document.getElementById('importInput').click()">↑ Import Backup</button>
+   <input type="file" id="importInput" accept=".json,application/json" onchange="importData(event)">
+   <button class="btn" onclick="resetFilters()">Reset Filters</button>
+  </div>
+ </section>
+
+ <footer class="py-6 border-t flex flex-wrap justify-between gap-3 muted mono text-[10px]" style="border-color:var(--line)">
+  <span>DINOLAB / PERSONAL PALEONTOLOGY SYSTEM</span><span>BUILT FOR DISCOVERY · 2026</span>
+ </footer>
+</main>
+
+<div id="modal" onclick="if(event.target===this)closeModal()">
+ <div class="modal-box">
+  <div class="flex items-start justify-between gap-4 mb-6">
+   <div><div class="section-label" id="modalLabel">SPECIMEN RECORD</div><h2 class="text-2xl font-bold mt-2" id="modalTitle">Add Dinosaur</h2></div>
+   <button class="btn" onclick="closeModal()">✕ Close</button>
+  </div>
+  <div id="modalContent"></div>
+ </div>
+</div>
+<div id="toast"></div>
+<input id="photoInput" type="file" accept="image/*">
+
+<script>
+const CUSTOM_KEY="dinolab_custom_species_v2";
+const PHOTO_KEY="dinolab_starter_photos_v2";
+
+const starter=[
+{id:"trex",name:"Tyrannosaurus rex",scientific:"Tyrannosaurus rex",period:"Cretaceous",diet:"Carnivore",length:"12–13 m",weight:"6–9 tonnes",habitat:"North America",emoji:"🦖",description:"A large theropod predator with powerful jaws, robust hind limbs, and small forelimbs.",discovery:"Named in 1905. Many fossils are known from western North America."},
+{id:"triceratops",name:"Triceratops",scientific:"Triceratops horridus",period:"Cretaceous",diet:"Herbivore",length:"7–9 m",weight:"6–12 tonnes",habitat:"North America",emoji:"🦕",description:"A horned herbivore with a broad frill, a beak, and three prominent facial horns.",discovery:"Known from numerous fossils in Late Cretaceous rock formations."},
+{id:"velociraptor",name:"Velociraptor",scientific:"Velociraptor mongoliensis",period:"Cretaceous",diet:"Carnivore",length:"About 2 m",weight:"15–20 kg",habitat:"Central Asia",emoji:"🦖",description:"A small feathered theropod with a long tail and a curved claw on each hind foot.",discovery:"Fossils were discovered in Mongolia."},
+{id:"brachiosaurus",name:"Brachiosaurus",scientific:"Brachiosaurus altithorax",period:"Jurassic",diet:"Herbivore",length:"20–22 m",weight:"Tens of tonnes",habitat:"North America",emoji:"🦕",description:"A long-necked sauropod with forelimbs longer than its hind limbs.",discovery:"Named in 1903 from fossils found in Colorado."},
+{id:"stegosaurus",name:"Stegosaurus",scientific:"Stegosaurus stenops",period:"Jurassic",diet:"Herbivore",length:"7–9 m",weight:"2–5 tonnes",habitat:"Western North America",emoji:"🦕",description:"An armored herbivore with two rows of back plates and a spiked tail.",discovery:"Well-known fossils come from the Morrison Formation."},
+{id:"spinosaurus",name:"Spinosaurus",scientific:"Spinosaurus aegyptiacus",period:"Cretaceous",diet:"Carnivore",length:"About 14–15 m (estimates vary)",weight:"Estimates vary",habitat:"North Africa",emoji:"🦖",description:"A large theropod with an elongated snout, conical teeth, and a tall back sail.",discovery:"Originally described from Egyptian fossils."},
+{id:"allosaurus",name:"Allosaurus",scientific:"Allosaurus fragilis",period:"Jurassic",diet:"Carnivore",length:"8–10 m",weight:"Around 1–2 tonnes",habitat:"North America",emoji:"🦖",description:"A large Jurassic predator with bony ridges above its eyes and powerful hind limbs.",discovery:"Many fossils have been recovered from the Morrison Formation."},
+{id:"ankylosaurus",name:"Ankylosaurus",scientific:"Ankylosaurus magniventris",period:"Cretaceous",diet:"Herbivore",length:"6–8 m",weight:"Several tonnes",habitat:"North America",emoji:"🦕",description:"An armored dinosaur with bony plates and a heavy tail club.",discovery:"Named in 1908 from fossils found in western North America."},
+{id:"dilophosaurus",name:"Dilophosaurus",scientific:"Dilophosaurus wetherilli",period:"Jurassic",diet:"Carnivore",length:"6–7 m",weight:"Several hundred kg",habitat:"North America",emoji:"🦖",description:"An early theropod recognized by its pair of thin skull crests.",discovery:"Known from Early Jurassic fossils in the southwestern United States."},
+{id:"parasaurolophus",name:"Parasaurolophus",scientific:"Parasaurolophus walkeri",period:"Cretaceous",diet:"Herbivore",length:"9–10 m",weight:"A few tonnes",habitat:"North America",emoji:"🦕",description:"A duck-billed herbivore with a long, backward-curving cranial crest.",discovery:"Named in 1922 from a fossil found in Alberta, Canada."},
+{id:"iguanodon",name:"Iguanodon",scientific:"Iguanodon bernissartensis",period:"Cretaceous",diet:"Herbivore",length:"9–11 m",weight:"Several tonnes",habitat:"Europe",emoji:"🦕",description:"A large herbivore with a distinctive thumb spike and grasping hands.",discovery:"One of the earliest dinosaurs to be scientifically described."},
+{id:"coelophysis",name:"Coelophysis",scientific:"Coelophysis bauri",period:"Triassic",diet:"Carnivore",length:"2–3 m",weight:"15–30 kg",habitat:"North America",emoji:"🦖",description:"A slender early theropod with a lightweight skeleton and long tail.",discovery:"Many specimens were recovered from Ghost Ranch, New Mexico."},
+{id:"plateosaurus",name:"Plateosaurus",scientific:"Plateosaurus engelhardti",period:"Triassic",diet:"Herbivore",length:"5–10 m",weight:"Several hundred kg",habitat:"Europe",emoji:"🦕",description:"An early long-necked sauropodomorph that could move on two or four limbs.",discovery:"Numerous fossils are known from Late Triassic European deposits."},
+{id:"gallimimus",name:"Gallimimus",scientific:"Gallimimus bullatus",period:"Cretaceous",diet:"Omnivore",length:"About 6 m",weight:"400–500 kg",habitat:"Mongolia",emoji:"🦖",description:"A fast-running, ostrich-like theropod with a toothless beak.",discovery:"Known from fossils discovered in the Gobi Desert."},
+{id:"archaeopteryx",name:"Archaeopteryx",scientific:"Archaeopteryx lithographica",period:"Jurassic",diet:"Carnivore",length:"About 0.5 m",weight:"Under 1 kg",habitat:"Present-day Germany",emoji:"🐦",description:"A feathered bird-like animal with wings, teeth, and a long bony tail.",discovery:"Famous fossils were found in Solnhofen limestone, Germany."}
+];
+
+function readJSON(key,fallback){
+ try{return JSON.parse(localStorage.getItem(key))??fallback}catch{return fallback}
+}
+let custom=readJSON(CUSTOM_KEY,[]);
+let photos=readJSON(PHOTO_KEY,{});
+let formPhoto="",photoTarget=null,toastTimer=null;
+
+function save(){
+ try{
+  localStorage.setItem(CUSTOM_KEY,JSON.stringify(custom));
+  localStorage.setItem(PHOTO_KEY,JSON.stringify(photos));
+  updateStats();
+ }catch(e){notify("Storage is full. Use a smaller photo or export a backup.");}
+}
+function allDinos(){return [...starter,...custom]}
+function findDino(id){return allDinos().find(d=>d.id===id)}
+function isCustom(d){return custom.some(x=>x.id===d.id)}
+function photoOf(d){return isCustom(d)?(d.photo||""):(photos[d.id]||"")}
+function esc(v=""){
+ return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function notify(message){
+ const el=document.getElementById("toast");el.textContent=message;
+ if(window.gsap)gsap.to(el,{opacity:1,y:0,duration:.25});
+ else{el.style.opacity=1;el.style.transform="translateY(0)"}
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>{
+  if(window.gsap)gsap.to(el,{opacity:0,y:12,duration:.25});
+  else{el.style.opacity=0;el.style.transform="translateY(12px)"}
+ },2600);
+}
+function updateStats(){
+ document.getElementById("totalCount").textContent=allDinos().length;
+ document.getElementById("customCount").textContent=custom.length;
+ document.getElementById("photoCount").textContent=
+  custom.filter(d=>d.photo).length+Object.values(photos).filter(Boolean).length;
+}
+
+function renderDatabase(){
+ const q=document.getElementById("search").value.toLowerCase().trim();
+ const diet=document.getElementById("dietFilter").value;
+ const period=document.getElementById("periodFilter").value;
+ const list=allDinos().filter(d=>
+  [d.name,d.scientific,d.habitat,d.period,d.diet].join(" ").toLowerCase().includes(q)&&
+  (!diet||d.diet===diet)&&(!period||d.period===period)
+ );
+ document.getElementById("emptyState").classList.toggle("hidden",list.length>0);
+ document.getElementById("dinoGrid").innerHTML=list.map(d=>{
+  const p=photoOf(d),mine=isCustom(d);
+  return `<article class="panel dino-card">
+   <div class="dino-image">
+    ${p?`<img src="${esc(p)}" alt="${esc(d.name)}" loading="lazy">`:`<div class="dino-emoji">${esc(d.emoji||"🦖")}</div>`}
+    <span class="tag absolute top-3 left-3" style="background:#07120ed9">${esc(d.period)}</span>
+    <button class="btn photo-button" onclick="changePhoto('${esc(d.id)}')">📷 ${p?"Change Photo":"Add Photo"}</button>
+   </div>
+   <div class="p-4">
+    <div class="mono muted text-[10px]">${esc(d.scientific||"Scientific name not recorded")}</div>
+    <h3 class="text-lg font-bold mt-2">${esc(d.name)}</h3>
+    <div class="flex gap-2 flex-wrap mt-3"><span class="tag">${esc(d.diet)}</span><span class="tag">${mine?"YOUR RECORD":"ARCHIVE"}</span></div>
+    <div class="mt-4 space-y-2 text-sm">
+     <div class="flex justify-between gap-3"><span class="muted">Length</span><span class="text-right">${esc(d.length||"Unknown")}</span></div>
+     <div class="flex justify-between gap-3"><span class="muted">Weight</span><span class="text-right">${esc(d.weight||"Unknown")}</span></div>
+     <div class="flex justify-between gap-3"><span class="muted">Region</span><span class="text-right">${esc(d.habitat||"Unknown")}</span></div>
     </div>
+    <div class="mt-5 grid grid-cols-2 gap-2">
+     <button class="btn" onclick="viewDetails('${esc(d.id)}')">View Details ↗</button>
+     <button class="btn btn-primary" onclick="editDino('${esc(d.id)}')">✎ Edit</button>
+    </div>
+   </div>
+  </article>`;
+ }).join("");
+ updateStats();
+ if(window.gsap)gsap.fromTo(".dino-card",{opacity:0,y:14,scale:.98},{opacity:1,y:0,scale:1,duration:.32,stagger:.025,ease:"power2.out"});
+}
 
-    <!-- JAVASCRIPT -->
-    <script>
-        const activityLog = document.getElementById("activityLog");
-        const terminalOutput = document.getElementById("terminalOutput");
+function compressImage(file,max=1000,quality=.76){
+ return new Promise((resolve,reject)=>{
+  if(!file||!file.type.startsWith("image/"))return reject(Error("Choose a valid image file."));
+  const reader=new FileReader();
+  reader.onerror=()=>reject(Error("Could not read the image."));
+  reader.onload=()=>{
+   const img=new Image();
+   img.onerror=()=>reject(Error("Could not open this image."));
+   img.onload=()=>{
+    const scale=Math.min(1,max/Math.max(img.width,img.height));
+    const canvas=document.createElement("canvas");
+    canvas.width=Math.max(1,Math.round(img.width*scale));
+    canvas.height=Math.max(1,Math.round(img.height*scale));
+    canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);
+    resolve(canvas.toDataURL("image/jpeg",quality));
+   };
+   img.src=reader.result;
+  };
+  reader.readAsDataURL(file);
+ });
+}
 
-        function addLog(message, type = "INFO") {
-            const row = document.createElement("div");
-            row.className = "flex gap-4";
+function changePhoto(id){
+ if(!findDino(id))return;
+ photoTarget=id;
+ const input=document.getElementById("photoInput");
+ input.value="";input.click();
+}
+document.getElementById("photoInput").addEventListener("change",async e=>{
+ const file=e.target.files[0],id=photoTarget;
+ if(!file||!id)return;
+ try{
+  const data=await compressImage(file),d=findDino(id);
+  if(!d)return;
+  if(isCustom(d))d.photo=data;else photos[id]=data;
+  save();renderDatabase();notify("Photo saved for "+d.name);
+ }catch(err){notify(err.message||"Could not save photo.");}
+});
 
-            const label = document.createElement("span");
-            label.className = "text-slate-500 shrink-0";
-            label.textContent = "[" + type + "]";
+function openModal(title,label,content){
+ document.getElementById("modalTitle").textContent=title;
+ document.getElementById("modalLabel").textContent=label;
+ document.getElementById("modalContent").innerHTML=content;
+ document.getElementById("modal").classList.add("open");
+ document.body.style.overflow="hidden";
+ if(window.gsap)gsap.fromTo(".modal-box",{opacity:0,y:22,scale:.97},{opacity:1,y:0,scale:1,duration:.25,ease:"power2.out"});
+}
+function closeModal(){
+ document.getElementById("modal").classList.remove("open");
+ document.body.style.overflow="";
+}
 
-            const content = document.createElement("span");
-            content.className = "text-slate-300 break-words";
-            content.textContent = message;
+function openForm(d=null){
+ formPhoto=d?photoOf(d):"";
+ const options=(arr,current)=>arr.map(v=>`<option ${v===current?"selected":""}>${esc(v)}</option>`).join("");
+ openModal(d?"Edit Dinosaur":"Add Dinosaur",d?"EDIT SPECIMEN":"NEW SPECIMEN RECORD",`
+ <form id="dinoForm" class="grid sm:grid-cols-2 gap-4">
+  <input type="hidden" id="fId" value="${esc(d?.id||"")}">
+  <label class="text-sm">Common Name *
+   <input class="field mt-2" id="fName" required maxlength="80" value="${esc(d?.name||"")}" placeholder="Dinosaur name">
+  </label>
+  <label class="text-sm">Scientific Name
+   <input class="field mt-2" id="fScientific" maxlength="100" value="${esc(d?.scientific||"")}">
+  </label>
+  <label class="text-sm">Geological Period
+   <select class="field mt-2" id="fPeriod">${options(["Triassic","Jurassic","Cretaceous","Other"],d?.period||"Cretaceous")}</select>
+  </label>
+  <label class="text-sm">Diet
+   <select class="field mt-2" id="fDiet">${options(["Carnivore","Herbivore","Omnivore"],d?.diet||"Carnivore")}</select>
+  </label>
+  <label class="text-sm">Estimated Length
+   <input class="field mt-2" id="fLength" maxlength="60" value="${esc(d?.length||"")}" placeholder="e.g. 10 meters">
+  </label>
+  <label class="text-sm">Estimated Weight
+   <input class="field mt-2" id="fWeight" maxlength="60" value="${esc(d?.weight||"")}" placeholder="e.g. 2 tonnes">
+  </label>
+  <label class="text-sm sm:col-span-2">Habitat / Region
+   <input class="field mt-2" id="fHabitat" maxlength="120" value="${esc(d?.habitat||"")}">
+  </label>
+  <label class="text-sm sm:col-span-2">Discovery Notes
+   <textarea class="field mt-2" id="fDiscovery" rows="2" maxlength="600">${esc(d?.discovery||"")}</textarea>
+  </label>
+  <label class="text-sm sm:col-span-2">Biological Description
+   <textarea class="field mt-2" id="fDescription" rows="3" maxlength="1000">${esc(d?.description||"")}</textarea>
+  </label>
+  <div class="sm:col-span-2">
+   <div class="text-sm mb-2">Specimen Photograph</div>
+   <button class="btn" type="button" onclick="document.getElementById('formPhotoInput').click()">＋ Choose Photo</button>
+   <input id="formPhotoInput" type="file" accept="image/*" style="display:none">
+   <button class="btn" type="button" onclick="formPhoto='';updateFormPreview()">Remove Photo</button>
+   <div id="formPreviewWrap" class="mt-3">${formPhoto?`<img class="preview" src="${esc(formPhoto)}" alt="Preview">`:`<div class="muted text-xs mt-2">No photo selected</div>`}</div>
+  </div>
+  <div class="sm:col-span-2 flex justify-end gap-2 pt-2">
+   <button type="button" class="btn" onclick="closeModal()">Cancel</button>
+   <button class="btn btn-primary" type="submit">Save Specimen ↗</button>
+  </div>
+ </form>`);
+ document.getElementById("formPhotoInput").addEventListener("change",async e=>{
+  if(!e.target.files[0])return;
+  try{formPhoto=await compressImage(e.target.files[0]);updateFormPreview();}
+  catch(err){notify(err.message);}
+ });
+ document.getElementById("dinoForm").addEventListener("submit",saveForm);
+}
+function updateFormPreview(){
+ const wrap=document.getElementById("formPreviewWrap");
+ if(wrap)wrap.innerHTML=formPhoto?`<img class="preview" src="${esc(formPhoto)}" alt="Preview">`:`<div class="muted text-xs mt-2">No photo selected</div>`;
+}
 
-            row.append(label, content);
-            activityLog.prepend(row);
-        }
+/* Save both new and edited dinosaurs */
+function saveForm(e){
+ e.preventDefault();
+ const id=document.getElementById("fId").value;
+ const name=document.getElementById("fName").value.trim();
+ if(!name)return notify("Enter a dinosaur name.");
 
-        function navigateTo(id) {
-            const section = document.getElementById(id);
+ const d={
+  id:id||"custom_"+Date.now()+"_"+Math.random().toString(36).slice(2,7),
+  name,
+  scientific:document.getElementById("fScientific").value.trim(),
+  period:document.getElementById("fPeriod").value,
+  diet:document.getElementById("fDiet").value,
+  length:document.getElementById("fLength").value.trim(),
+  weight:document.getElementById("fWeight").value.trim(),
+  habitat:document.getElementById("fHabitat").value.trim(),
+  discovery:document.getElementById("fDiscovery").value.trim(),
+  description:document.getElementById("fDescription").value.trim(),
+  emoji:"🦖"
+ };
 
-            if (!section) return;
+ if(id){
+  const existingCustom=custom.findIndex(x=>x.id===id);
+  if(existingCustom>=0){
+   d.photo=formPhoto;
+   custom[existingCustom]=d;
+  }else{
+   /* Preserve the starter species and save an editable override */
+   const original=starter.find(x=>x.id===id);
+   if(!original)return notify("Dinosaur record not found.");
+   d.photo=formPhoto;
+   custom.unshift(d);
+   starterOverrides[id]={...d};
+   saveOverrides();
+  }
+ }else{
+  d.photo=formPhoto;
+  custom.unshift(d);
+ }
 
-            section.scrollIntoView({ behavior: "smooth" });
+ save();closeModal();renderDatabase();
+ notify(id?"Dinosaur information updated.":"Dinosaur added.");
+}
 
-            document.querySelectorAll(".nav-link").forEach(link => {
-                link.classList.toggle(
-                    "active",
-                    link.getAttribute("href") === "#" + id
-                );
-            });
+/* Default dinosaur edits are saved as overrides */
+const OVERRIDE_KEY="dinolab_starter_overrides_v2";
+let starterOverrides=readJSON(OVERRIDE_KEY,{});
+function saveOverrides(){
+ try{localStorage.setItem(OVERRIDE_KEY,JSON.stringify(starterOverrides));}
+ catch(e){notify("Could not save the default dinosaur changes.");}
+}
+function allDinos(){
+ return [...starter.map(d=>starterOverrides[d.id]?{...d,...starterOverrides[d.id]}:d),...custom];
+}
+function findDino(id){return allDinos().find(d=>d.id===id)}
+function isCustom(d){return custom.some(x=>x.id===d.id)}
+function photoOf(d){
+ if(isCustom(d))return d.photo||"";
+ return d.photo||photos[d.id]||"";
+}
+function editDino(id){
+ const d=findDino(id);
+ if(!d)return notify("Dinosaur record not found.");
+ openForm(d);
+}
 
-            document.getElementById("sidebar").classList.add("hidden");
-            addLog("Navigated to " + id + ".", "NAV");
-        }
+function viewDetails(id){
+ const d=findDino(id);
+ if(!d)return;
+ const p=photoOf(d);
+ openModal(d.name,"SPECIMEN PROFILE / "+d.period.toUpperCase(),`
+  <div class="dino-image rounded-xl mb-5">
+   ${p?`<img src="${esc(p)}" alt="${esc(d.name)}">`:`<div class="dino-emoji">${esc(d.emoji||"🦖")}</div>`}
+  </div>
+  <div class="section-label">${esc(d.scientific||"Scientific name not recorded")}</div>
+  <div class="flex flex-wrap gap-2 mt-3 mb-5"><span class="tag">${esc(d.period)}</span><span class="tag">${esc(d.diet)}</span></div>
+  <div class="grid sm:grid-cols-2 gap-3">
+   <div class="stat-card"><div class="muted text-xs">ESTIMATED LENGTH</div><div class="font-semibold mt-2">${esc(d.length||"Unknown")}</div></div>
+   <div class="stat-card"><div class="muted text-xs">ESTIMATED WEIGHT</div><div class="font-semibold mt-2">${esc(d.weight||"Unknown")}</div></div>
+   <div class="stat-card sm:col-span-2"><div class="muted text-xs">HABITAT / REGION</div><div class="font-semibold mt-2">${esc(d.habitat||"Not recorded")}</div></div>
+  </div>
+  <div class="mt-5"><div class="section-label">BIOLOGICAL DESCRIPTION</div><p class="muted leading-7 mt-2">${esc(d.description||"No description recorded.")}</p></div>
+  <div class="mt-5"><div class="section-label">DISCOVERY NOTES</div><p class="muted leading-7 mt-2">${esc(d.discovery||"No discovery notes recorded.")}</p></div>
+  <div class="flex flex-wrap gap-2 mt-6">
+   <button class="btn btn-primary" onclick="closeModal();editDino('${esc(d.id)}')">✎ Edit Dinosaur</button>
+   <button class="btn" onclick="closeModal();changePhoto('${esc(d.id)}')">📷 ${p?"Change Photo":"Add Photo"}</button>
+   <button class="btn" onclick="closeModal()">Close</button>
+  </div>`);
+}
 
-        // Sidebar navigation
-        document.querySelectorAll(".nav-link").forEach(link => {
-            link.addEventListener("click", () => {
-                document.querySelectorAll(".nav-link").forEach(item => {
-                    item.classList.remove("active");
-                });
+function toggleTheme(){
+ document.body.classList.toggle("light");
+ document.documentElement.classList.toggle("dark",!document.body.classList.contains("light"));
+ if(window.gsap){
+  gsap.fromTo("#themeBtn",{rotationY:0},{rotationY:360,duration:.6,ease:"power2.inOut",onComplete(){gsap.set("#themeBtn",{rotationY:0})}});
+  gsap.to("#orbOne",{rotation:"+=80",duration:.8,ease:"power2.out"});
+  gsap.fromTo("body",{opacity:.88},{opacity:1,duration:.45});
+ }
+}
+function replayAnimation(){
+ if(!window.gsap)return notify("GSAP did not load. Check your internet connection.");
+ gsap.killTweensOf(["#heroTitle","#heroArt","#orbOne","#orbTwo","#heroText","#heroButtons","#stats .stat-card"]);
+ gsap.set(["#heroTitle","#heroText","#heroButtons","#stats .stat-card"],{clearProps:"all"});
+ const tl=gsap.timeline({defaults:{ease:"power3.out",duration:.55}});
+ tl.fromTo("#heroTitle",{opacity:0,rotationX:-65,rotationY:20,scale:.78,y:35},{opacity:1,rotationX:0,rotationY:0,scale:1,y:0,duration:.85})
+  .fromTo("#heroText",{opacity:0,y:20},{opacity:1,y:0},"<.2")
+  .fromTo("#heroButtons",{opacity:0,scale:.88,y:15},{opacity:1,scale:1,y:0,stagger:.08},"<.15")
+  .fromTo("#stats .stat-card",{opacity:0,rotationY:35,scale:.85,y:18},{opacity:1,rotationY:0,scale:1,y:0,stagger:.09},"<.1")
+  .fromTo("#heroArt",{rotation:20,scale:.7,opacity:0},{rotation:0,scale:1,opacity:.13,duration:.8},"<")
+  .fromTo(".dino-card",{opacity:0,rotationX:-12,scale:.92,y:24},{opacity:1,rotationX:0,scale:1,y:0,stagger:.035,duration:.45},"<.15")
+  .to("#heroTitle",{rotationY:360,duration:1.1,ease:"power2.inOut"},">+.15")
+  .to("#heroTitle",{rotationX:360,duration:.9,ease:"power2.inOut"},">+.15");
+ gsap.to("#orbOne",{x:-55,y:40,rotation:35,duration:2,ease:"sine.inOut",yoyo:true,repeat:1});
+ gsap.to("#orbTwo",{x:55,y:-30,rotation:-25,duration:2,ease:"sine.inOut",yoyo:true,repeat:1});
+}
+function resetFilters(){
+ document.getElementById("search").value="";
+ document.getElementById("dietFilter").value="";
+ document.getElementById("periodFilter").value="";
+ renderDatabase();
+}
+function exportData(){
+ const payload={
+  app:"DinoLab",version:2,exportedAt:new Date().toISOString(),
+  customDinosaurs:custom,starterPhotos:photos,starterOverrides
+ };
+ const url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}));
+ const a=document.createElement("a");a.href=url;a.download="dinolab-research-backup.json";a.click();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+ notify("Research backup exported.");
+}
+function importData(e){
+ const file=e.target.files[0];if(!file)return;
+ const reader=new FileReader();
+ reader.onload=()=>{
+  try{
+   const data=JSON.parse(reader.result);
+   if(!Array.isArray(data.customDinosaurs)||!data.starterPhotos||typeof data.starterPhotos!=="object")throw Error();
+   if(!confirm("Replace your custom records and dinosaur photos with this backup?"))return;
+   custom=data.customDinosaurs;photos=data.starterPhotos;
+   starterOverrides=data.starterOverrides||{};
+   saveOverrides();save();renderDatabase();notify("Backup imported.");
+  }catch{notify("Invalid DinoLab backup file.");}
+  finally{e.target.value="";}
+ };
+ reader.readAsText(file);
+}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
 
-                link.classList.add("active");
-                document.getElementById("sidebar").classList.add("hidden");
-            });
-        });
-
-        // Quick access and module buttons
-        document.querySelectorAll("[data-command]").forEach(button => {
-            button.addEventListener("click", () => {
-                navigateTo(button.dataset.command);
-            });
-        });
-
-        // Refresh dashboard
-        document.getElementById("refreshButton").addEventListener("click", event => {
-            const button = event.currentTarget;
-
-            button.textContent = "✓ System Refreshed";
-            addLog("Dashboard refreshed by operator.", "REFRESH");
-
-            setTimeout(() => {
-                button.textContent = "↻ Refresh System";
-            }, 1500);
-        });
-
-        // Mobile menu
-        document.getElementById("menuButton").addEventListener("click", () => {
-            document.getElementById("sidebar").classList.toggle("hidden");
-        });
-
-        // Theme toggle
-        document.getElementById("themeButton").addEventListener("click", () => {
-            const light = document.body.classList.toggle("light-mode");
-
-            if (light) {
-                document.body.style.backgroundColor = "#f8fafc";
-                document.body.style.color = "#0f172a";
-
-                document.querySelectorAll(".panel").forEach(panel => {
-                    panel.style.backgroundColor = "#ffffff";
-                    panel.style.borderColor = "#cbd5e1";
-                });
-
-                document.querySelectorAll(".profile-value").forEach(value => {
-                    value.style.color = "#0f172a";
-                });
-
-                document.querySelectorAll(".nav-link").forEach(link => {
-                    link.style.color = "#334155";
-                });
-            } else {
-                document.body.style.backgroundColor = "";
-                document.body.style.color = "";
-
-                document.querySelectorAll(".panel").forEach(panel => {
-                    panel.style.backgroundColor = "";
-                    panel.style.borderColor = "";
-                });
-
-                document.querySelectorAll(".profile-value").forEach(value => {
-                    value.style.color = "";
-                });
-
-                document.querySelectorAll(".nav-link").forEach(link => {
-                    link.style.color = "";
-                });
-            }
-
-            addLog("Display theme changed to " + (light ? "light" : "dark") + ".", "THEME");
-        });
-
-        // Copy profile
-        document.getElementById("copyProfile").addEventListener("click", async () => {
-            const details = [
-                "Name: Jive Miguel V. Dequito",
-                "Address: Negros Occ. Victorias City, Brgy 6A",
-                "Age: 20",
-                "Gmail / Username: @sukuna",
-                "Contact: 09933272908"
-            ].join("\n");
-
-            const message = document.getElementById("profileMessage");
-
-            try {
-                await navigator.clipboard.writeText(details);
-                message.textContent = "Profile details copied.";
-                addLog("Profile details copied to clipboard.", "PROFILE");
-            } catch {
-                message.textContent = "Clipboard unavailable. You can copy the details manually.";
-            }
-        });
-
-        // Export profile as a text file
-        document.getElementById("downloadProfile").addEventListener("click", () => {
-            const details = [
-                "DIGITAL REALM - OPERATOR PROFILE",
-                "Name: Jive Miguel V. Dequito",
-                "Address: Negros Occ. Victorias City, Brgy 6A",
-                "Age: 20",
-                "Gmail / Username: @sukuna",
-                "Contact: 09933272908"
-            ].join("\n");
-
-            const file = new Blob([details], { type: "text/plain" });
-            const url = URL.createObjectURL(file);
-            const link = document.createElement("a");
-
-            link.href = url;
-            link.download = "jive-dequito-profile.txt";
-            link.click();
-
-            URL.revokeObjectURL(url);
-            addLog("Profile exported as a text file.", "EXPORT");
-        });
-
-        // Simulated terminal commands
-        const commands = {
-            help: "Commands: help, status, identity, modules, projects, clear",
-            status: "System online. Digital Realm interface is operational.",
-            identity: "Operator: Jive Miguel V. Dequito | Age: 20 | Profile loaded.",
-            modules: "Identity Core, Project Vault, Command Terminal, System Monitor.",
-            projects: "Web Interface, System Design, Next Experiment."
-        };
-
-        document.getElementById("terminalForm").addEventListener("submit", event => {
-            event.preventDefault();
-
-            const input = document.getElementById("terminalInput");
-            const command = input.value.trim().toLowerCase();
-
-            if (!command) return;
-
-            const entered = document.createElement("p");
-            entered.className = "text-secondary";
-            entered.textContent = "> " + command;
-            terminalOutput.appendChild(entered);
-
-            if (command === "clear") {
-                terminalOutput.replaceChildren();
-                input.value = "";
-                addLog("Terminal output cleared.", "TERM");
-                return;
-            }
-
-            const response = document.createElement("p");
-            response.className = "text-slate-300";
-            response.textContent = commands[command] ||
-                "Unknown command. Type 'help' for available commands.";
-
-            terminalOutput.appendChild(response);
-            terminalOutput.scrollTop = terminalOutput.scrollHeight;
-
-            addLog("Terminal command executed: " + command, "TERM");
-            input.value = "";
-        });
-
-        // Clear activity log
-        document.getElementById("clearLogButton").addEventListener("click", () => {
-            activityLog.replaceChildren();
-            addLog("Activity log cleared.", "SYSTEM");
-        });
-    </script>
-
+renderDatabase();
+if(window.gsap){
+ gsap.fromTo("#topbar",{y:-35,opacity:0},{y:0,opacity:1,duration:.65,ease:"power3.out"});
+ replayAnimation();
+}
+</script>
 </body>
 </html>
